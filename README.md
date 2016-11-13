@@ -1,2 +1,3 @@
 # Axo
-open source repo based documentation browser
+Axo is an open source repository hosted on Github Bitbucket documentation browser.
+
