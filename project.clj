@@ -10,6 +10,7 @@
                  [ring/ring-json "0.4.0"]
                  [compojure "1.5.1"]
                  [clj-jgit "0.8.9"]]
-  :main ^:skip-aot src.core
+  :main ^:skip-aot axo.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all}
+             :dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]]}})
