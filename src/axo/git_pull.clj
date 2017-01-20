@@ -1,7 +1,8 @@
 (ns axo.git-pull
    (:require [clojure.java.io :as io])   
    (:import [org.eclipse.jgit.lib RepositoryBuilder BatchingProgressMonitor]
-            [org.eclipse.jgit.api Git CloneCommand PullCommand]))
+            [org.eclipse.jgit.api Git CloneCommand PullCommand]
+            [org.apache.commons.io FileUtils]))
 
 (defn GitBatchProgressMonitor
   []
@@ -33,4 +34,16 @@
       (.setBare bare?)
       (.call)))
 
+(defn git-pull
+ [^Git git-repo]
+ (-> git-repo
+     (.pull)
+     (.call)))
 
+(defn git-delete
+ [^Git git-repo]
+ (let [resp (-> git-repo
+                (.getRepository))
+       resp-dir (.getDirectory resp)]
+    (.close resp)
+    (FileUtils/deleteDirectory resp-dir)))
