@@ -9,7 +9,8 @@
                  [ring/ring-jetty-adapter "1.4.0"]
                  [ring/ring-json "0.4.0"]
                  [compojure "1.5.1"]
-                 [clj-jgit "0.8.9"]]
+                 [clj-jgit "0.8.9"]
+                 [org.apache.directory.studio/org.apache.commons.io "2.4"]]
   :main ^:skip-aot axo.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}
