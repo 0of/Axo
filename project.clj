@@ -10,7 +10,10 @@
                  [ring/ring-json "0.4.0"]
                  [compojure "1.5.1"]
                  [clj-jgit "0.8.9"]
-                 [org.apache.directory.studio/org.apache.commons.io "2.4"]]
+                 [org.apache.directory.studio/org.apache.commons.io "2.4"]
+                 [factual/clj-leveldb "0.1.1"]
+                 [org.apache.lucene/lucene-core "6.3.0"] 
+                 [com.vladsch.flexmark/flexmark "0.11.6"]]
   :main ^:skip-aot axo.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}

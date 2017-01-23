@@ -1,4 +1,4 @@
-(ns axo.git-pull
+(ns axo.git-access
    (:require [clojure.java.io :as io])   
    (:import [org.eclipse.jgit.lib RepositoryBuilder BatchingProgressMonitor]
             [org.eclipse.jgit.api Git CloneCommand PullCommand]
