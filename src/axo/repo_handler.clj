@@ -1,16 +1,16 @@
 (ns axo.repo-handler
   (:require [axo.git-access :as git]
             [clj-leveldb :as db]
-            [ring-jetty.util.ws :as ws])
+            [clojure.core.async :refer [go]])
   (:import [org.eclipse.jgit.api.errors GitAPIException InvalidRemoteException TransportException]
            [java.io IOException]))
 
 (defn AddGitMonitor
   [channel]
   (reify git/GitProgressMonitor
-    (onUpdate [this session percent]
-      (ws/send! channel {:session session
-                         :progress percent}))))
+    (onUpdate [this session percent])))
+      ; (ws/send! channel {:session session
+      ;                    :progress percent}))))
 
 (defn add-repo
   [{:keys [repos-db channel]} url]
