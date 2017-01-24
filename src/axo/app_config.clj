@@ -22,7 +22,7 @@
    (if (:repo-dir config)
      (reset! value config))))
 
-(defn api-config-handler
+(defn app-config-handler
   [f]
   (fn [request]
     (f (assoc request :app-config @value))))
