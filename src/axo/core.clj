@@ -5,6 +5,7 @@
             [compojure.handler :as handler]
             [axo.app-config :as config]
             [axo.repo-handler :as repo]
+            [ring.middleware.json :as json]
             [ring.util.response :refer [resource-response header]])
   (:import [org.apache.commons.io FilenameUtils])
   (:gen-class))  
@@ -47,6 +48,8 @@
 (defn get-handlers
   [app-dir repos-db]  
   (-> (handler/site app)
+      json/wrap-json-response
+      (json/wrap-json-body {:keywords? true}) 
       config/app-config-handler
       (partial app-repos-handler repos-db)
       (partial app-dir-handler app-dir)))
