@@ -3,7 +3,8 @@
             [clj-leveldb :as db]
             [clojure.core.async :refer [go]])
   (:import [org.eclipse.jgit.api.errors GitAPIException InvalidRemoteException TransportException]
-           [java.io IOException]))
+           [java.io IOException]
+           [org.apache.commons.io FilenameUtils]))
 
 (defn AddGitMonitor
   [channel]
@@ -45,3 +46,15 @@
       (catch IOException e
         [:error :io-exception]))
     [:error :non-existent]))
+
+(defn list-repos
+  [{:keys [repos-db]}]
+  [:ok (db/iterator repos-db)])
+
+(defn load-repos-db
+  [^String app-dir]
+  (let [dat-dir (FilenameUtils/concat app-dir "dat")]
+    (try
+      [:ok (db/create-db dat-dir {})]
+      (catch IOException e
+        [:error :io-exception]))))
