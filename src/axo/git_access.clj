@@ -4,15 +4,26 @@
             [org.eclipse.jgit.api Git CloneCommand PullCommand]
             [org.apache.commons.io FileUtils]))
 
+(defprotocol GitProgressMonitor
+  (onUpdate [this session percent]))
+
 (defn GitBatchProgressMonitor
-  []
+  [monitor]
   (proxy [BatchingProgressMonitor] []
     (onEndTask 
       ([task-name _])
       ([task-name work-curr total percent])) 
     (onUpdate 
       ([task-name work-curr total percent])
-      ([task-name work-curr])))) 
+      ([task-name work-curr]))))
+
+(defn get-repo-absolute-path
+  ^String 
+  [^Git git-repo]
+  (-> git-repo
+      (.getRepository)
+      (.getDirectory)
+      (.getAbsolutePath)))
 
 (defn git-load
   [git-dir]
@@ -24,9 +35,9 @@
       (Git.)))
 
 (defn git-clone
-  [uri local-dir remote-name local-branch bare?]
+  [uri local-dir remote-name local-branch bare? monitor]
   (-> (Git/cloneRepository)
-      (.setProgressMonitor (GitBatchProgressMonitor))
+      (.setProgressMonitor (GitBatchProgressMonitor monitor))
       (.setURI uri)
       (.setDirectory (io/as-file local-dir))
       (.setRemote remote-name)
