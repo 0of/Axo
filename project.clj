@@ -15,7 +15,9 @@
                  [org.apache.directory.studio/org.apache.commons.io "2.4"]
                  [factual/clj-leveldb "0.1.1"]
                  [org.apache.lucene/lucene-core "6.3.0"] 
-                 [com.vladsch.flexmark/flexmark "0.11.6"]]
+                 [com.vladsch.flexmark/flexmark "0.11.6"]
+                 [org.omcljs/om "1.0.0-alpha34"]
+                 [cljs-http "0.1.21"]]
   :main ^:skip-aot axo.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}
