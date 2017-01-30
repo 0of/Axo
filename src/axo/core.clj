@@ -19,10 +19,19 @@
 
 (defn- user-repos
  [{:keys [repos-db]}] 
- (let [[status repos] (repo/list-repos repos-db)]
+ (let [[status repos] (repo/list-repos {:repos-db repos-db})]
    (if (= :ok status)
      {:status 200 :body {:repos repos}}
      {:status 400 :body {:error (name repos)}})))
+
+(defn- new-repo
+ [{:keys [repos-db body]}]
+ (let [[status result] (repo/add-repo {:repos-db repos-db
+                                       :channel nil}
+                         (get body "url"))]
+    (if (= :ok status)
+      {:status 200 :body nil}
+      {:status 400 :body {:error (name result)}})))                                                
 
 (defroutes app
   ;; main page
@@ -30,8 +39,11 @@
     (GET  "/" [] (resource-response "index.html" {:root "public"}))
 
     (context "/user" []
-      (GET "/repos" req (user-repos req))
-      (PATCH "/config" req (user-config req))))
+      (PATCH "/config" req (user-config req))  
+
+      (context "/repos" []  
+        (GET "/repos" req (user-repos req))
+        (POST "/repos" req (new-repo req)))))
 
   (route/resources "/"))
 

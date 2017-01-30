@@ -8,12 +8,20 @@
 
 (enable-console-print!)
 
+(defn- add-repo
+  [ev]
+  (let [el (gdom/getElement "url-input")
+        url (.-value el)
+        post-url ""]  
+    (go (let [resp (<! (http/post post-url {:json-params {:url url}}))]
+          （prn resp))))
+
 (defui Widget
   Object
   (render [this]
     (dom/div nil
-      (dom/input #js {:type "text" :ref "repo-url"})
-      (dom/button nil "Add"))))
+      (dom/input #js {:id "url-input" :type "text"})
+      (dom/button #js {:onClick add-repo}))))
 
 (def widget-factory (om/factory Widget))
 
