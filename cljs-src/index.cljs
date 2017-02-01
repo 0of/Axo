@@ -21,7 +21,7 @@
   (render [this]
     (dom/div nil
       (dom/input #js {:id "url-input" :type "text"})
-      (dom/button #js {:onClick add-repo}))))
+      (dom/button #js {:onClick add-repo} "submit"))))
 
 (def widget-factory (om/factory Widget))
 
