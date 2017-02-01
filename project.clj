@@ -18,7 +18,13 @@
                  [com.vladsch.flexmark/flexmark "0.11.6"]
                  [org.omcljs/om "1.0.0-alpha34"]
                  [cljs-http "0.1.21"]]
+  :plugins [[lein-cljsbuild "1.1.4"]]
   :main ^:skip-aot axo.core
   :target-path "target/%s"
+  :cljsbuild {:builds [{:source-paths ["cljs-src/"]
+                        :compiler {:output-to "resources/public/js/main.js"
+                                   :optimizations :none
+                                   :output-dir "resources/public/"
+                                   :source-map true}}]}
   :profiles {:uberjar {:aot :all}
              :dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]]}})
