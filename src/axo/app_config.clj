@@ -17,7 +17,7 @@
 
 (defn- read-config
  [file-path]
- (let [config (edn/read (slurp file-path))]
+ (let [config (edn/read-string (slurp file-path))]
    ;; validate config
    (if (:repo-dir config)
      (reset! value config))))

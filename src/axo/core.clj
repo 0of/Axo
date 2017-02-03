@@ -1,5 +1,6 @@
 (ns axo.core
   (:require [aleph.http :as http]
+            [ring.adapter.jetty :as jetty] 
             [compojure.core :refer :all]
             [compojure.route :as route]
             [compojure.handler :as handler]
@@ -48,12 +49,12 @@
   (route/resources "/"))
 
 (defn app-dir-handler
-  [dir f]
+  [f dir]
   (fn [request]
     (f (assoc request :app-dir dir))))
 
 (defn app-repos-handler
-  [repos-db f]
+  [f repos-db]
   (fn [request]
     (f (assoc request :repos-db repos-db))))
 
@@ -63,8 +64,8 @@
       json/wrap-json-response
       (json/wrap-json-body {:keywords? true}) 
       config/app-config-handler
-      (partial app-repos-handler repos-db)
-      (partial app-dir-handler app-dir)))
+      (app-repos-handler repos-db)
+      (app-dir-handler app-dir)))
 
 (defn- find-jar
   []
@@ -76,7 +77,7 @@
 
 (defn -main
   [& args]
-  (let [app-dir ((FilenameUtils/getFullPath (find-jar)))
+  (let [app-dir (FilenameUtils/getFullPath (find-jar))
         _ (config/init-config app-dir)
-        repos-db (repo/load-repos-db app-dir)]
-    (http/start-server (get-handlers app-dir repos-db) {:port 8000})))
+        [status repos-db] (repo/load-repos-db app-dir)]
+    (jetty/run-jetty (get-handlers app-dir repos-db) {:port 8000})))
