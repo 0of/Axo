@@ -17,14 +17,16 @@
                  [org.apache.lucene/lucene-core "6.3.0"] 
                  [com.vladsch.flexmark/flexmark "0.11.6"]
                  [org.omcljs/om "1.0.0-alpha34"]
-                 [cljs-http "0.1.21"]]
+                 [cljs-http "0.1.21"]
+                 [ring/ring-jetty-adapter "1.4.0"]]
   :plugins [[lein-cljsbuild "1.1.4"]]
   :main ^:skip-aot axo.core
   :target-path "target/%s"
   :cljsbuild {:builds [{:source-paths ["cljs-src/"]
                         :compiler {:output-to "resources/public/js/main.js"
                                    :optimizations :none
-                                   :output-dir "resources/public/"
+                                   :output-dir "resources/pudblic/"
                                    :source-map true}}]}
   :profiles {:uberjar {:aot :all}
-             :dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]]}})
+             :dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]
+                                  [org.clojure/tools.logging "0.3.1"]]}})
