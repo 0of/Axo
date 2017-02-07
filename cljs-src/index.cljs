@@ -12,7 +12,7 @@
   [ev]
   (let [el (gdom/getElement "url-input")
         url (.-value el)
-        post-url ""]  
+        post-url "/app/user/repos"]  
     (go (let [resp (<! (http/post post-url {:json-params {:url url}}))]
           （prn resp))))
 
