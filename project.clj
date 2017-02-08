@@ -25,7 +25,7 @@
   :cljsbuild {:builds [{:source-paths ["cljs-src/"]
                         :compiler {:output-to "resources/public/js/main.js"
                                    :optimizations :none
-                                   :output-dir "resources/pudblic/"
+                                   :output-dir "resources/public/"
                                    :source-map true}}]}
   :profiles {:uberjar {:aot :all}
              :dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]

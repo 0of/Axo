@@ -43,8 +43,8 @@
       (PATCH "/config" req (user-config req))  
 
       (context "/repos" []  
-        (GET "/repos" req (user-repos req))
-        (POST "/repos" req (new-repo req)))))
+        (GET "/" req (user-repos req))
+        (POST "/" req (new-repo req)))))
 
   (route/resources "/"))
 
