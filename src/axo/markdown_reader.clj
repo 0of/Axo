@@ -17,7 +17,7 @@
                           (recur lv rest-coll (conj r node children)))
                         [r c])
                      ;; normal node
-                     (recur lv (rest c) (conj r node)))                    
+                     (recur lv (rest c) (conj r node)))
                    [r c])))]
    (first (walk 0 (seq (.getChildren root))))))
 
