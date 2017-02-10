@@ -1,7 +1,8 @@
 (ns axo.repo-handler
   (:require [axo.git-access :as git]
             [clj-leveldb :as db]
-            [clojure.core.async :refer [go]])
+            [clojure.core.async :refer [go]]
+            [clojure.string :refer [split]])
   (:import [org.eclipse.jgit.api.errors GitAPIException InvalidRemoteException TransportException]
            [java.io IOException]
            [org.apache.commons.io FilenameUtils]))
@@ -17,9 +18,11 @@
   [{:keys [repos-db channel]} url]
   (if-let [local-path (db/get repos-db url)]
     [:error :already-existent]
-    (let [session (hash url)]
+    (let [name (last (split url #"/"))
+          location (FilenameUtils/concat "/tmp" name)
+          session (hash url)]
       (go
-        (let [cloned-repo (git/git-clone url "/tmp" "origin" "master" false (AddGitMonitor channel))]
+        (let [cloned-repo (git/git-clone url location "origin" "master" false (AddGitMonitor channel))]
           (db/put repos-db url (git/get-repo-absolute-path cloned-repo))))
 
       [:ok {:session session

@@ -29,10 +29,10 @@
  [{:keys [repos-db body]}]
  (let [[status result] (repo/add-repo {:repos-db repos-db
                                        :channel nil}
-                         (get body "url"))]
+                         (:url body))]
     (if (= :ok status)
       {:status 200 :body nil}
-      {:status 400 :body {:error (name result)}})))                                                
+      {:status 400 :body {:error (name result)}})))                                        
 
 (defroutes app
   ;; main page
