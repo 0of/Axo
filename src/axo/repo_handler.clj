@@ -52,12 +52,14 @@
 
 (defn list-repos
   [{:keys [repos-db]}]
-  [:ok (db/iterator repos-db)])
+  (let [result (db/iterator repos-db)]
+    [:ok (map first result)]))
 
 (defn load-repos-db
   [^String app-dir]
   (let [dat-dir (FilenameUtils/concat app-dir "dat")]
     (try
-      [:ok (db/create-db dat-dir {})]
+      [:ok (db/create-db dat-dir  {:key-decoder byte-streams/to-string 
+                                   :val-decoder byte-streams/to-string})]
       (catch IOException e
         [:error :io-exception]))))
