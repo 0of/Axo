@@ -23,6 +23,22 @@
       (dom/input #js {:id "url-input" :type "text"})
       (dom/button #js {:onClick add-repo} "submit"))))
 
+(defui RepoList
+  Object
+  (componentDidMount [this]
+    (go (let [resp (<! (http/get "/app/user/repos" nil))]
+          (if (= 200 (:status resp))
+            (om/set-state! this (:body resp))))))
+
+  (render [this]
+    (let [{:keys [repos]} (om/get-state this)]
+      (dom/ul nil
+        (map #(dom/li nil (dom/a nil %)) repos)))))
+
 (def widget-factory (om/factory Widget))
+(def repolist-factory (om/factory RepoList))
 
 (js/ReactDOM.render (widget-factory) (gdom/getElement "content"))
+(js/ReactDOM.render (repolist-factory) (gdom/getElement "repo-list"))
+
+
