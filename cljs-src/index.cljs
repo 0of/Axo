@@ -16,13 +16,6 @@
     (go (let [resp (<! (http/post post-url {:json-params {:url url}}))]
           （prn resp))))
 
-(defui Widget
-  Object
-  (render [this]
-    (dom/div nil
-      (dom/input #js {:id "url-input" :type "text"})
-      (dom/button #js {:onClick add-repo} "submit"))))
-
 (defui RepoList
   Object
   (componentDidMount [this]
@@ -35,10 +28,17 @@
       (dom/ul nil
         (map #(dom/li nil (dom/a nil %)) repos)))))
 
-(def widget-factory (om/factory Widget))
 (def repolist-factory (om/factory RepoList))
 
-(js/ReactDOM.render (widget-factory) (gdom/getElement "content"))
-(js/ReactDOM.render (repolist-factory) (gdom/getElement "repo-list"))
+(defui Widget
+  Object
+  (render [this]
+    (dom/div nil
+      (repolist-factory)
+      (dom/input #js {:id "url-input" :type "text"})
+      (dom/button #js {:onClick add-repo} "submit"))))
 
+(def widget-factory (om/factory Widget))
+
+(js/ReactDOM.render (widget-factory) (gdom/getElement "content"))
 
