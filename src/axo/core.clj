@@ -1,12 +1,13 @@
 (ns axo.core
   (:require [aleph.http :as http]
-            [ring.adapter.jetty :as jetty] 
+            [ring.adapter.jetty9 :as jetty]
             [compojure.core :refer :all]
             [compojure.route :as route]
             [compojure.handler :as handler]
             [axo.app-config :as config]
             [axo.repo-handler :as repo]
             [ring.middleware.json :as json]
+            [clojure.data.json :as json-parser]
             [ring.util.response :refer [resource-response header]])
   (:import [org.apache.commons.io FilenameUtils])
   (:gen-class))  
@@ -32,7 +33,7 @@
                          (:url body))]
     (if (= :ok status)
       {:status 200 :body nil}
-      {:status 400 :body {:error (name result)}})))                                        
+      {:status 400 :body {:error (name result)}})))               
 
 (defroutes app
   ;; main page
@@ -59,7 +60,7 @@
     (f (assoc request :repos-db repos-db))))
 
 (defn get-handlers
-  [app-dir repos-db]  
+  [app-dir repos-db]
   (-> (handler/site app)
       json/wrap-json-response
       (json/wrap-json-body {:keywords? true}) 
@@ -75,9 +76,32 @@
       .getLocation
       .getPath))
 
+(def channels (atom #{}))
+
+(def general-channel-on-message 
+  [ws raw-message]
+  (let [msg (json-parser/read-str raw-message)]
+    (if-let [method (:method msg)]
+      ;; TODO method match 
+      ()
+      {:error "invalid format" :body ""})))
+
+(defn- on-connect
+  [channel]
+  (swap! channels conj channel))
+
+(defn- on-disconnect
+  [channel] 
+  (swap! channels disj channel))
+
+(def channel-handler {:on-connect on-connect
+                      :on-close on-disconnect
+                      :on-text general-channel-on-message})
+
 (defn -main
   [& args]
   (let [app-dir (FilenameUtils/getFullPath (find-jar))
         _ (config/init-config app-dir)
         [status repos-db] (repo/load-repos-db app-dir)]
-    (jetty/run-jetty (get-handlers app-dir repos-db) {:port 8000})))
+    (jetty/run-jetty (get-handlers app-dir repos-db) {:port 8000
+                                                      :websockets {"/app/channel" channel-handler}})))                                                       
