@@ -1,6 +1,5 @@
 (ns axo.core
-  (:require [aleph.http :as http]
-            [ring.adapter.jetty9 :as jetty]
+  (:require [ring.adapter.jetty9 :as jetty]
             [compojure.core :refer :all]
             [compojure.route :as route]
             [compojure.handler :as handler]
@@ -78,7 +77,7 @@
 
 (def channels (atom #{}))
 
-(def general-channel-on-message 
+(defn- general-channel-on-message 
   [ws raw-message]
   (let [msg (json-parser/read-str raw-message)]
     (if-let [method (:method msg)]
