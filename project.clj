@@ -18,7 +18,7 @@
                  [org.omcljs/om "1.0.0-alpha34"]
                  [cljs-http "0.1.21"]
                  [info.sunng/ring-jetty9-adapter "0.9.5"]
-                 [clout "2.1.2"]]
+                 [bidi "2.0.16"]]
   :plugins [[lein-cljsbuild "1.1.4"]]
   :main ^:skip-aot axo.core
   :target-path "target/%s"

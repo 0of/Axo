@@ -7,7 +7,8 @@
             [axo.repo-handler :as repo]
             [ring.middleware.json :as json]
             [clojure.data.json :as json-parser]
-            [ring.util.response :refer [resource-response header]])
+            [ring.util.response :refer [resource-response header]]
+            [bidi.bidi :as bidi])
   (:import [org.apache.commons.io FilenameUtils])
   (:gen-class))  
 
@@ -48,6 +49,21 @@
 
   (route/resources "/"))
 
+(def ws-app
+  ["POST /app/user/repos" #(new-repo %)])
+
+(defn- make-request
+  [uri body ws]
+  {:body body
+   :uri uri
+   :channel ws})
+
+(defn- match-ws-handler
+  [{body :body method :method} ws]
+  (if-let [handler (bidi/match-route ws-app)]
+    (handler (make-request method body ws))
+    {:error "not found" :body ""}))
+
 (defn app-dir-handler
   [f dir]
   (fn [request]
@@ -81,8 +97,7 @@
   [ws raw-message]
   (let [msg (json-parser/read-str raw-message)]
     (if-let [method (:method msg)]
-      ;; TODO method match 
-      ()
+      (match-ws-handler msg)
       {:error "invalid format" :body ""})))
 
 (defn- on-connect
