@@ -53,11 +53,11 @@
       (.listen ws (.. WebSocket -Event -MESSAGE #()))))
 
   (render [this]
-    (let [ws])
-    (dom/div nil
-      (repolist-factory)
-      (dom/input #js {:id "url-input" :type "text"})
-      (dom/button #js {:onClick add-repo} "submit"))))
+    (let [{:keys [ws] (om/get-state this)}]
+      (dom/div nil
+        (repolist-factory)
+        (dom/input #js {:id "url-input" :type "text"})
+        (dom/button #js {:onClick #(add-repo % ws) "submit"})))))
 
 (def widget-factory (om/factory Widget))
 
