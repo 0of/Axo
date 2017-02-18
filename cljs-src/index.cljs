@@ -4,7 +4,9 @@
             [om.dom :as dom :include-macros true]
             [om.next :as om :refer-macros [defui]]
             [goog.dom :as gdom]
-            [cljs-http.client :as http]))
+            [goog.json :as json]
+            [cljs-http.client :as http])
+  (:import [goog.net WebSocket]))
 
 (enable-console-print!)
 
@@ -15,6 +17,15 @@
         post-url "/app/user/repos"]
     (go (let [resp (<! (http/post post-url {:json-params {:url url}}))]
           （prn resp))))
+
+(defn- add-repo-via-ws
+  [ev ws]
+  (let [el (gdom/getElement "url-input")
+        url (.-value el)
+        post-url "POST /app/user/repos"
+        body (json/serialize {:method post-url
+                              :body {:url url}})]
+    (go (.send ws body))))
 
 (defui RepoList
   Object
@@ -32,7 +43,17 @@
 
 (defui Widget
   Object
+  (componentDidMount [this]
+    ;; connect WS
+    (let [ws (WebSocket.)]
+      (.open ws "ws://:8991")
+      ;; register event handler
+      (.listenOnce ws (.. WebSocket -Event -OPENED) #(om/set-state! this {:ws ws}))
+      ;; register event handler TODO
+      (.listen ws (.. WebSocket -Event -MESSAGE #()))))
+
   (render [this]
+    (let [ws])
     (dom/div nil
       (repolist-factory)
       (dom/input #js {:id "url-input" :type "text"})
