@@ -11,7 +11,7 @@
   [channel]
   (reify git/GitProgressMonitor
     (onUpdate [this session percent])))
-      ; (ws/send! channel {:session session
+      ; (ws/send! channel {:session sessionc
       ;                    :progress percent}))))
 
 (defn add-repo
